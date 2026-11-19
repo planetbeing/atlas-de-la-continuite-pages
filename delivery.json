@@ -1,0 +1,84 @@
+{
+ "version": "1ffb5f2cc859",
+ "edition": "v4",
+ "shell": 11355,
+ "core": 2093696,
+ "worlds": 466780,
+ "evidence": 626923,
+ "app": 153578,
+ "host": 11163,
+ "css": 42343,
+ "offline_files": 17,
+ "offline_bytes": 3936141,
+ "standalone": 4031249,
+ "files": [
+  {
+   "url": "index.html",
+   "bytes": 11355
+  },
+  {
+   "url": "data/core.ba55c06449.json",
+   "bytes": 2093696
+  },
+  {
+   "url": "data/worlds.9806205643.json",
+   "bytes": 466780
+  },
+  {
+   "url": "data/evidence.b86a364241.json",
+   "bytes": 626923
+  },
+  {
+   "url": "app.71746446f5.js",
+   "bytes": 153578
+  },
+  {
+   "url": "host.3217e25618.js",
+   "bytes": 11163
+  },
+  {
+   "url": "atlas.c139d44847.css",
+   "bytes": 42343
+  },
+  {
+   "url": "manifest.webmanifest",
+   "bytes": 794
+  },
+  {
+   "url": "icons/icon-192.png",
+   "bytes": 3448
+  },
+  {
+   "url": "icons/icon-512.png",
+   "bytes": 10254
+  },
+  {
+   "url": "icons/icon-maskable-512.png",
+   "bytes": 9154
+  },
+  {
+   "url": "icons/apple-touch-icon.png",
+   "bytes": 2841
+  },
+  {
+   "url": "icons/icon.svg",
+   "bytes": 316
+  },
+  {
+   "url": "assets/illustrations/terre.cdbb46b548.webp",
+   "bytes": 169284
+  },
+  {
+   "url": "assets/illustrations/azure-chalice.1c5bfbd650.webp",
+   "bytes": 115824
+  },
+  {
+   "url": "assets/illustrations/baol-refuge.71c50ceb3b.webp",
+   "bytes": 115692
+  },
+  {
+   "url": "assets/illustrations/esquie.ff8738a244.webp",
+   "bytes": 102696
+  }
+ ]
+}

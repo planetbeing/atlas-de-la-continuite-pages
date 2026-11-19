@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#07080d">
+<title>Atlas de la Continuité — République de la Continuité</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Atlas">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preload" href="data/core.ba55c06449.json" as="fetch" crossorigin="anonymous">
+<link rel="stylesheet" href="atlas.c139d44847.css">
+</head>
+<body>
+<a class="skip" href="#panels">Skip to the story panel</a>
+<div class="boot" id="boot" role="status" aria-live="polite">
+  <div class="boot-card">
+    <span class="cocarde" aria-hidden="true"></span>
+    <p class="boot-t">Atlas de la Continuité</p>
+    <p class="boot-m" id="bootMsg">Loading the atlas…</p>
+    <div class="boot-bar" aria-hidden="true"><i id="bootBar"></i></div>
+    <button type="button" class="btn primary" id="bootRetry" hidden>Try again</button>
+  </div>
+</div>
+<div class="updatebar" id="updateBar" role="status" hidden></div>
+<div class="app" id="app">
+  <header class="masthead">
+    <div class="brand">
+      <span class="cocarde" aria-hidden="true"></span>
+      <div class="brand-text">
+        <h1>Atlas de la Continuité</h1>
+        <p class="tagline"><span lang="fr">République de la Continuité</span> · a lore atlas of the saved campaign, <span id="spanDates"></span></p>
+      </div>
+    </div>
+    <div class="search" role="search">
+      <label class="sr" for="q">Search systems, worlds and stories</label>
+      <input id="q" type="search" role="combobox" aria-expanded="false" aria-controls="results" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search systems, worlds, stories…">
+      <ul id="results" class="results" role="listbox" aria-label="Search results" hidden></ul>
+    </div>
+  </header>
+
+  <main class="stage">
+    <section class="mapcol" aria-label="Galaxy map and timeline">
+      <div class="map" id="mapbox">
+        <canvas id="map" tabindex="0" role="application" aria-roledescription="galaxy map" aria-label="Galaxy map" aria-describedby="maphelp"></canvas>
+        <p id="maphelp" class="sr">Drag or use the arrow keys to pan. Scroll, pinch, or press plus and minus to zoom. Press Enter to select the system nearest the centre of the map. Every system can also be found with the search field.</p>
+        <div class="cartouche" id="cartouche" aria-live="polite"></div>
+        <div class="mapctl" role="toolbar" aria-label="Map view">
+          <button type="button" id="zin" aria-label="Zoom in" title="Zoom in">+</button>
+          <button type="button" id="zout" aria-label="Zoom out" title="Zoom out">−</button>
+          <button type="button" id="zrep" aria-label="Fit République territory at the map date" title="Fit République">⌂</button>
+          <button type="button" id="zgal" aria-label="Fit the whole galaxy" title="Whole galaxy">◎</button>
+          <button type="button" id="tterr" aria-pressed="true" aria-label="Show approximate territory shading" title="Territory shading">▦</button>
+          <button type="button" id="tlab" aria-pressed="true" aria-label="Show system labels" title="Labels">Aa</button>
+        </div>
+        <details class="legend" id="legend">
+          <summary>Légende <span>· map key</span></summary>
+          <div id="legendBody"></div>
+        </details>
+        <div class="tip" id="tip" role="tooltip" hidden></div>
+      </div>
+
+      <section class="timeline" id="timeline" aria-label="Timeline of saved observations">
+        <div class="tl-row">
+          <button type="button" id="tlPlay" class="tl-btn" aria-pressed="false" aria-label="Play through the saved observations">▶</button>
+          <button type="button" id="tlPrev" class="tl-btn" aria-label="Previous saved observation">‹</button>
+          <div class="tl-readout">
+            <span class="tl-k" lang="fr">Observation</span>
+            <strong id="tlDate"></strong>
+            <span id="tlIdx" class="tl-idx"></span>
+          </div>
+          <button type="button" id="tlNext" class="tl-btn" aria-label="Next saved observation">›</button>
+          <span class="tl-gap"></span>
+          <button type="button" id="evPrev" class="tl-btn tl-ev" aria-label="Previous chronicle event in view">◂<span> event</span></button>
+          <button type="button" id="evNext" class="tl-btn tl-ev" aria-label="Next chronicle event in view"><span>event </span>▸</button>
+          <button type="button" id="tlLatest" class="tl-btn tl-latest" aria-label="Jump to the latest saved observation">Latest</button>
+        </div>
+        <div class="tl-track">
+          <button type="button" class="tl-pre" id="tlPre" aria-label="Events dated before the archive begins">
+            <span lang="fr">Avant</span><b id="tlPreYear"></b><small id="tlPreN"></small>
+          </button>
+          <div class="tl-main">
+            <canvas id="tlTicks" aria-hidden="true"></canvas>
+            <label class="sr" for="tlRange">Map date: saved observation</label>
+            <input type="range" id="tlRange" min="0" max="1" step="1" value="0">
+            <div class="tl-years" id="tlYears" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="tl-row2">
+          <div class="seg mode-seg" id="modeSeg" role="radiogroup" aria-label="Reading mode">
+            <button type="button" role="radio" data-mode="complete" aria-checked="true" title="Show every retained record, whatever the map date">Complete<span class="lg"> history</span></button>
+            <button type="button" role="radio" data-mode="through" aria-checked="false" title="Hold back records the archive does not yet contain at the map date">Through <span class="lg">this </span>date</button>
+          </div>
+          <p class="tl-note" id="tlNote" aria-live="off"></p>
+          <button type="button" class="tl-btn tl-more" id="tlMore" aria-expanded="false" aria-controls="tlOpts" aria-label="Playback options">⋯</button>
+          <div class="tl-opts" id="tlOpts">
+            <label class="sr" for="tlPlayMode">Playback behaviour at events</label>
+            <select id="tlPlayMode" title="What playback does at major events">
+              <option value="linger" selected>Linger at events</option>
+              <option value="stop">Stop at events</option>
+              <option value="steady">Steady</option>
+            </select>
+            <label class="sr" for="tlSpeed">Playback speed</label>
+            <select id="tlSpeed" title="Playback speed">
+              <option value="0.5">0.5×</option>
+              <option value="1" selected>1×</option>
+              <option value="2">2×</option>
+              <option value="4">4×</option>
+            </select>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <aside class="drawer" id="drawer" data-sheet="half" aria-label="Atlas panels">
+      <button type="button" class="sheet-handle" id="sheetHandle" aria-controls="panels" aria-expanded="true" aria-label="Resize the story panel"><span aria-hidden="true"></span></button>
+      <div class="readbar" id="readbar">
+        <button type="button" class="btn rb-map" id="rbMap" aria-label="Back to the map">◂ <span lang="fr">Carte</span></button>
+        <div class="rb-t" id="rbTitle" aria-live="off"></div>
+        <button type="button" class="btn rb-date" id="rbDate" aria-label="Map date; show the map"></button>
+        <button type="button" class="btn rb-read" id="rbRead" aria-label="Read full screen"><span lang="fr">Lire</span> ▴</button>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Panels" id="tabs">
+        <button type="button" role="tab" id="tab-story" aria-controls="p-story" data-tab="story"><span lang="fr">Récit</span><small>Story</small></button>
+        <button type="button" role="tab" id="tab-index" aria-controls="p-index" data-tab="index"><span lang="fr">Index</span><small>Stories</small></button>
+        <button type="button" role="tab" id="tab-chron" aria-controls="p-chron" data-tab="chron"><span lang="fr">Chronique</span><small>Timeline</small></button>
+        <button type="button" role="tab" id="tab-journeys" aria-controls="p-journeys" data-tab="journeys"><span lang="fr">Parcours</span><small>Journeys</small></button>
+        <button type="button" role="tab" id="tab-sources" aria-controls="p-sources" data-tab="sources"><span lang="fr">Sources</span><small>Method</small></button>
+      </div>
+      <div class="filters" id="filters" hidden></div>
+      <div class="panels" id="panels" tabindex="-1">
+        <div class="panel" role="tabpanel" id="p-story" aria-labelledby="tab-story"></div>
+        <div class="panel" role="tabpanel" id="p-index" aria-labelledby="tab-index" hidden></div>
+        <div class="panel" role="tabpanel" id="p-chron" aria-labelledby="tab-chron" hidden></div>
+        <div class="panel" role="tabpanel" id="p-journeys" aria-labelledby="tab-journeys" hidden></div>
+        <div class="panel" role="tabpanel" id="p-sources" aria-labelledby="tab-sources" hidden></div>
+      </div>
+    </aside>
+  </main>
+  <div id="live" class="sr" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p class="noscript">The Atlas de la Continuité needs JavaScript to draw its map and stories.</p></noscript>
+</div>
+<script id="atlas-boot" type="application/json">{"version":"1ffb5f2cc859","edition":"v4","data":{"core":{"url":"data/core.ba55c06449.json","bytes":2093696},"worlds":{"url":"data/worlds.9806205643.json","bytes":466780},"evidence":{"url":"data/evidence.b86a364241.json","bytes":626923}},"offline":{"files":[{"url":"index.html","bytes":11355},{"url":"data/core.ba55c06449.json","bytes":2093696},{"url":"data/worlds.9806205643.json","bytes":466780},{"url":"data/evidence.b86a364241.json","bytes":626923},{"url":"app.71746446f5.js","bytes":153578},{"url":"host.3217e25618.js","bytes":11163},{"url":"atlas.c139d44847.css","bytes":42343},{"url":"manifest.webmanifest","bytes":794},{"url":"icons/icon-192.png","bytes":3448},{"url":"icons/icon-512.png","bytes":10254},{"url":"icons/icon-maskable-512.png","bytes":9154},{"url":"icons/apple-touch-icon.png","bytes":2841},{"url":"icons/icon.svg","bytes":316},{"url":"assets/illustrations/terre.cdbb46b548.webp","bytes":169284},{"url":"assets/illustrations/azure-chalice.1c5bfbd650.webp","bytes":115824},{"url":"assets/illustrations/baol-refuge.71c50ceb3b.webp","bytes":115692},{"url":"assets/illustrations/esquie.ff8738a244.webp","bytes":102696}]}}</script>
+<script src="host.3217e25618.js" defer></script>
+<script src="app.71746446f5.js" defer></script>
+</body>
+</html>
